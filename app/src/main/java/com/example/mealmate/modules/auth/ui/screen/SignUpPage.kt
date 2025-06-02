@@ -127,8 +127,6 @@ fun SignUpPage(
                     enabled = !(isLoading.value || name.value.isEmpty() || email.value.isEmpty() || password.value.isEmpty() || cpassword.value.isEmpty()),
                     onClick = {
                         registerViewModel.onClickSignUp(appNavi)
-//                        appNavi.offAll(Screen.OtpScreen.route)
-
                     },
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier

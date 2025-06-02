@@ -1,9 +1,8 @@
 package com.example.mealmate.modules.auth.data.repo
 
+import LoginResponse
 import com.example.mealmate.modules.auth.data.api.LoginApi
 import com.example.mealmate.modules.auth.data.model.LoginRequest
-import com.example.mealmate.modules.auth.data.model.OTPRequest
-import com.example.mealmate.modules.auth.data.repo.LoginRepo
 import com.example.mealmate.shared.model.CustomFailure
 import com.example.mealmate.shared.model.Either
 import com.example.mealmate.shared.model.NetworkException
@@ -14,8 +13,8 @@ class LoginRepoImpl @Inject constructor(val api: LoginApi) : LoginRepo {
     override suspend fun login(request: LoginRequest): Either<CustomFailure, String> {
         return try {
             val res = api.login(request)
-            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
-                Either.Right(res.data)
+            if (res.metadata.statusCode in 200..210) {
+                Either.Right(res.data.token)
             } else {
                 throw NetworkException(res.metadata.message)
             }

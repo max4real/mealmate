@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import offAll
 import to
 import javax.inject.Inject
 
@@ -142,21 +143,20 @@ class RegisterViewModel @Inject constructor(
 
     fun resendOtp() {
         setResending(true)
-        startOtpCountdown()
-        // Trigger resend logic here
-        // Once done:
         viewModelScope.launch {
             resendOtp(
                 otpRequest = ResendOtpRequest(
                     email = email.value,
                 ),
-                onSuccess = { code ->
+                onSuccess = { status ->
                     setResending(false)
+                    startOtpCountdown()
                     // register success, go to login
                 },
                 onError = { errorMsg ->
                     setResending(false)
                     errorMessage.value = errorMsg
+                    showErrorMessage.value = true
                 }
             )
         }
@@ -165,13 +165,13 @@ class RegisterViewModel @Inject constructor(
 
     private suspend fun resendOtp(
         otpRequest: ResendOtpRequest,
-        onSuccess: (code: String) -> Unit,
+        onSuccess: (status: String) -> Unit,
         onError: (errMsg: String) -> Unit
     ) {
         val result = registerRepo.resendOtpRequest(otpRequest)
         result.fold(
             onLeft = { failure -> onError(failure.errorMessage) },
-            onRight = { code -> onSuccess(code) }
+            onRight = { status -> onSuccess(status) }
         )
     }
 
@@ -180,7 +180,7 @@ class RegisterViewModel @Inject constructor(
         isOtpBtnEnable.value = value.length == 6
     }
 
-    fun onOtpBtnClick() {
+    fun onOtpBtnClick(appNavi: NavHostController) {
         otpBtnLoading.value = true
         viewModelScope.launch {
             verifyOtp(
@@ -190,7 +190,7 @@ class RegisterViewModel @Inject constructor(
                 ),
                 onSuccess = { code ->
                     otpBtnLoading.value = false
-                    // register success, go to login
+                    appNavi.offAll(Screen.LoginScreen.route)
                 },
                 onError = { errorMsg ->
                     otpBtnLoading.value = false

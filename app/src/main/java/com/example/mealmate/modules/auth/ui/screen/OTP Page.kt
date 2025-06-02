@@ -48,6 +48,7 @@ fun OTPPage(
     val errorMessage by registerViewModel.errorMessage.collectAsState()
     val isEnable by registerViewModel.isEnable.collectAsState()
     val isOtpBtnEnable by registerViewModel.isOtpBtnEnable.collectAsState()
+    val otpBtnLoading by registerViewModel.otpBtnLoading.collectAsState()
     val canResend by registerViewModel.canResend.collectAsState()
     val resending by registerViewModel.resending.collectAsState()
 
@@ -133,7 +134,7 @@ fun OTPPage(
             Button(
                 enabled = isOtpBtnEnable,
                 onClick = {
-                    registerViewModel.onOtpBtnClick()
+                    registerViewModel.onOtpBtnClick(appNavi)
                 },
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier
@@ -147,11 +148,11 @@ fun OTPPage(
                     disabledContainerColor = CustomColors.textSecond
                 )
             ) {
-//                if (isLoading.value) CircularProgressIndicator(
-//                    modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.White
-//                )
-//                else
-                Text("Continue")
+                if (otpBtnLoading) CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.White
+                )
+                else
+                    Text("Continue")
             }
         }
     }

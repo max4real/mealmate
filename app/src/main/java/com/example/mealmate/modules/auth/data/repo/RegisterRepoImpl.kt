@@ -14,8 +14,9 @@ class RegisterRepoImpl @Inject constructor(val api: RegisterApi) : RegisterRepo 
     override suspend fun registerRequestOtp(request: OTPRequest): Either<CustomFailure, String> {
         return try {
             val res = api.registerRequestOtp(request)
-            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
-                Either.Right(res.data)
+            println(res)
+            if (res.metadata.statusCode in 200..210) {
+                Either.Right(res.metadata.message)
             } else {
                 throw NetworkException(res.metadata.message)
             }
@@ -27,8 +28,8 @@ class RegisterRepoImpl @Inject constructor(val api: RegisterApi) : RegisterRepo 
     override suspend fun verifyOtpRequest(request: VerifyOtpRequest): Either<CustomFailure, String> {
         return try {
             val res = api.verifyOtp(request)
-            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
-                Either.Right(res.data)
+            if (res.metadata.statusCode in 200..210) {
+                Either.Right(res.metadata.message)
             } else {
                 throw NetworkException(res.metadata.message)
             }
@@ -40,8 +41,8 @@ class RegisterRepoImpl @Inject constructor(val api: RegisterApi) : RegisterRepo 
     override suspend fun resendOtpRequest(request: ResendOtpRequest): Either<CustomFailure, String> {
         return try {
             val res = api.resendOtp(request)
-            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
-                Either.Right(res.data)
+            if (res.metadata.statusCode in 200..210) {
+                Either.Right(res.metadata.message)
             } else {
                 throw NetworkException(res.metadata.message)
             }

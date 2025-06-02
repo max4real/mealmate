@@ -31,7 +31,7 @@ class TokenManager @Inject constructor(
     }
 
     fun clearToken() {
-        prefs.edit().remove(KEY_TOKEN).apply()
+        prefs.edit() { remove(KEY_TOKEN) }
     }
 
     companion object {
