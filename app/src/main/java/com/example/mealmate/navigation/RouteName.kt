@@ -1,6 +1,7 @@
 package com.example.mealmate.navigation
 
 sealed class Screen(val route: String) {
+    data object SplashScreen : Screen("splash")
     data object HomeScreen : Screen("home")
     data object LoginScreen : Screen("login")
     data object SignupScreen : Screen("auth")

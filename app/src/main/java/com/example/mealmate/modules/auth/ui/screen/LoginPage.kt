@@ -66,7 +66,7 @@ fun LoginPage(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .imePadding()
+//            .imePadding()
             .background(Color.White),
     ) {
         Column(
@@ -118,7 +118,8 @@ fun LoginPage(
                             fontWeight = FontWeight.W700
                         )
                     }
-                Spacer(modifier = Modifier.weight(1f))
+//                Spacer(modifier = Modifier.weight(1f))
+                20.HeightBox()
                 Button(
                     enabled = email.value.isNotEmpty() && password.value.isNotEmpty(),
                     onClick = {

@@ -9,18 +9,25 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.example.mealmate.navigation.Graph
+import com.example.mealmate.modules.home.ui.screen.HomePage
+import com.example.mealmate.modules.splashscreen.ui.screen.SplashScreen
+import com.example.mealmate.navigation.Screen
 import com.example.mealmate.navigation.graphes.authNavGraph
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Graph.AuthGraph.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.SplashScreen.route
+    ) { //Graph.AuthGraph.route
+        composable(Screen.SplashScreen.route) { SplashScreen(navController) }
         authNavGraph(navController)
-//        composable(Screen.HomeScreen.route) { HomePage(navController) }
+        composable(Screen.HomeScreen.route) { HomePage(navController) }
     }
 }
 
