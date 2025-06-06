@@ -27,6 +27,7 @@ import com.example.mealmate.ui.theme.CustomColors
 @Composable
 fun CustomAppBar(
     userName: String?,
+    showLogo: Boolean = true,
     includeBackKey: Boolean = false,
     onClickBack: () -> Unit = {}
 ) {
@@ -53,14 +54,15 @@ fun CustomAppBar(
                 }
                 4.WidthBox()
             }
-            Image(
-                painter = painterResource(id = R.drawable.icon),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(androidx.compose.foundation.shape.CircleShape)
-            )
-
+            if (showLogo) {
+                Image(
+                    painter = painterResource(id = R.drawable.icon),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(androidx.compose.foundation.shape.CircleShape)
+                )
+            }
             5.WidthBox()
             Text(
                 text = "MealMate",

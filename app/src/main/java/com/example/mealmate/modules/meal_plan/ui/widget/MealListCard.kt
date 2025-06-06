@@ -25,12 +25,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.mealmate.modules.home.data.model.MealDetailModel
+import com.example.mealmate.modules.meal_plan.data.model.MealPlanModel
 import com.example.mealmate.ui.theme.CustomColors
 
 @Composable
 fun MealListCard(
-    image: String,
-    mealName: String,
+    info: MealPlanModel,
     onViewClick: () -> Unit = {}
 ) {
     Row(
@@ -42,7 +43,7 @@ fun MealListCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = rememberAsyncImagePainter(image),
+            painter = rememberAsyncImagePainter(info.recipeImage),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -65,7 +66,7 @@ fun MealListCard(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = mealName,
+                text = info.recipeName,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )

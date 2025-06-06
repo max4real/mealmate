@@ -24,21 +24,21 @@ class SplashViewModel @Inject constructor(
 
     fun checkLoginAndNavigate(appNavi: NavHostController) {
         viewModelScope.launch {
-//            getMe(
-//                onError = { errorMsg ->
-//                    println(errorMsg)
-//                    appNavi.offAll(Graph.AuthGraph.route)
-//                },
-//                success = { meModel ->
-//                    sessionManager.me = meModel
-//                    appNavi.offAll(Screen.HomeScreen.route)
-//                }
-//            )
-            if (tokenManager.getToken() != null) {
-                appNavi.offAll(Screen.HomeScreen.route)
-            } else {
-                appNavi.offAll(Graph.AuthGraph.route)
-            }
+            getMe(
+                onError = { errorMsg ->
+                    println(errorMsg)
+                    appNavi.offAll(Graph.AuthGraph.route)
+                },
+                success = { meModel ->
+                    sessionManager.me = meModel
+                    appNavi.offAll(Screen.HomeScreen.route)
+                }
+            )
+//            if (tokenManager.getToken() != null) {
+//                appNavi.offAll(Screen.HomeScreen.route)
+//            } else {
+//                appNavi.offAll(Graph.AuthGraph.route)
+//            }
         }
     }
 

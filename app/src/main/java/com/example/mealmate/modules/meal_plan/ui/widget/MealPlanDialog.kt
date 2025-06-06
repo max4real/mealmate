@@ -1,4 +1,4 @@
-package com.example.mealmate.modules.home.ui.widget
+package com.example.mealmate.modules.meal_plan.ui.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,16 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,20 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.example.mealmate.extensions.WidthBox
-import com.example.mealmate.modules.home.data.model.MealDetailModel
-import com.example.mealmate.ui.theme.CustomColors
+import com.example.mealmate.modules.meal_plan.data.model.MealPlanModel
 
 @Composable
-fun MealDetailsDialog(
-    info: MealDetailModel,
-    isAddToPlanLoading: Boolean = false,
-    message: String,
-    onAddToMealPlan: () -> Unit,
+fun MealPlanDialog(
+    info: MealPlanModel,
     onDismissRequest: () -> Unit
 ) {
-    val title = info.name
-    val imageUrl = info.imageUrl
+    val title = info.recipeName
+    val imageUrl = info.recipeImage
     val instructions = info.instruction
 
     Dialog(onDismissRequest = onDismissRequest) {
@@ -107,29 +97,23 @@ fun MealDetailsDialog(
                         color = Color.Black
                     )
 
-//                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-//                        info.mealIngredient.forEach { mealIngredient ->
-//                            val name = mealIngredient.ingredient.name
-//                            val unit = mealIngredient.measurement.unit
-//                            Text(text = "• $name ($unit)", color = Color.DarkGray)
-//                        }
-//                    }
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        info.mealIngredient.forEach { item ->
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                AsyncImage(
-                                    model = item.ingredient.imageUrl,
-                                    contentDescription = item.ingredient.name,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Text(
-                                    text = "${item.ingredient.name} (${item.measurement.unit})",
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    color = Color.DarkGray
-                                )
-                            }
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        info.ingredients.forEach { mealIngredient ->
+                            val name = mealIngredient.name
+                            val unit = mealIngredient.qty
+                            Text(text = "• $name ($unit)", color = Color.DarkGray)
                         }
                     }
+//                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//                        info.ingredients.forEach { item ->
+//
+//                            Text(
+//                                text = "${item.name} (${item.qty})",
+//                                modifier = Modifier.padding(start = 8.dp),
+//                                color = Color.DarkGray
+//                            )
+//                        }
+//                    }
 
                     Text(
                         text = "Instructions",
@@ -141,45 +125,6 @@ fun MealDetailsDialog(
                         text = instructions,
                         color = Color.DarkGray
                     )
-                }
-
-                // Action button
-                Button(
-                    onClick = onAddToMealPlan,
-                    enabled = !isAddToPlanLoading,
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                        .height(45.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White,
-                        disabledContentColor = Color.White.copy(alpha = 0.5f),
-                        disabledContainerColor = CustomColors.textSecond
-                    )
-                ) {
-                    when {
-                        isAddToPlanLoading -> CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = Color.White
-                        )
-
-                        message.isNotEmpty() -> Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(message)
-                        }
-
-                        else -> Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
-                            5.WidthBox()
-                            Text("Add To Plan")
-                        }
-                    }
                 }
             }
         }

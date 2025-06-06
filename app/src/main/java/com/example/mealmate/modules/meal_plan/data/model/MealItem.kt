@@ -5,3 +5,4 @@ data class MealItem(
     val name: String,
     val imageUrl: String
 )
+

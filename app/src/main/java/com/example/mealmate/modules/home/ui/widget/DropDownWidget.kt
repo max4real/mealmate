@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -40,7 +41,8 @@ import com.example.mealmate.ui.theme.CustomColors
 @Composable
 fun DropDownWidget(
     categoryList: List<CategoryModel>,
-    onSelected: (CategoryModel) -> Unit
+    onSelected: (CategoryModel) -> Unit,
+    isLoading: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<CategoryModel?>(null) }
@@ -55,16 +57,26 @@ fun DropDownWidget(
             onExpandedChange = { expanded = !expanded }
         ) {
             TextField(
+                enabled = !isLoading,
                 value = selectedCategory?.name ?: "",
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Select Category") },
                 placeholder = { Text("Choose...") },
                 trailingIcon = {
-                    Icon(
-                        imageVector = if (expanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
-                        contentDescription = null
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = Color.Black
+                        )
+                    } else {
+                        Icon(
+                            imageVector = if (expanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
+                            contentDescription = null
+                        )
+                    }
                 },
                 modifier = Modifier
                     .menuAnchor()
@@ -95,7 +107,7 @@ fun DropDownWidget(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 AsyncImage(
-                                    model = category.image,
+                                    model = category.imageUrl,
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(32.dp)

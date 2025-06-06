@@ -1,5 +1,6 @@
 package com.example.mealmate.modules.home.ui.widget
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,17 +20,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.mealmate.modules.home.data.model.MealDetailModel
 import com.example.mealmate.ui.theme.CustomColors
 
 @Composable
 fun MealGridCard(
-    imageUrl: String,
-    mealName: String,
+    mealDetailModel: MealDetailModel,
     onViewClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onViewClick() }
             .clip(RoundedCornerShape(12.dp)),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(8.dp),
@@ -37,7 +39,7 @@ fun MealGridCard(
     ) {
         Column {
             AsyncImage(
-                model = imageUrl,
+                model = mealDetailModel.imageUrl,
                 contentDescription = "Meal Image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -53,7 +55,7 @@ fun MealGridCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = mealName,
+                    text = mealDetailModel.name,
                     color = Color.Black,
                     modifier = Modifier.weight(1f)
                 )
