@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -68,6 +69,13 @@ fun SignUpPage(
             .systemBarsPadding()
             .background(Color.White)
     ) {
+//        Image(
+//            modifier = Modifier.fillMaxSize(),
+//            painter = painterResource(R.drawable.sign_up_bg_3),
+//            contentDescription = "Background",
+//            contentScale = ContentScale.Crop // or ContentScale.FillBounds if you prefer stretching
+//        )
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -86,7 +94,11 @@ fun SignUpPage(
                 )
                 10.HeightBox()
 
-                Text("Sign up for MealMate", fontWeight = FontWeight.W700, fontSize = 28.sp)
+                Text(
+                    "Sign up for MealMate",
+                    fontWeight = FontWeight.W700,
+                    fontSize = 28.sp,
+                )
                 20.HeightBox()
                 CustomInputField(
                     value = name.value,
@@ -119,7 +131,11 @@ fun SignUpPage(
 
                 if (errorMessage.value.isNotEmpty()) {
                     10.HeightBox()
-                    Text(errorMessage.value, color = CustomColors.red, fontWeight = FontWeight.W700)
+                    Text(
+                        errorMessage.value,
+                        color = CustomColors.red,
+                        fontWeight = FontWeight.W700
+                    )
                 }
 
                 20.HeightBox()

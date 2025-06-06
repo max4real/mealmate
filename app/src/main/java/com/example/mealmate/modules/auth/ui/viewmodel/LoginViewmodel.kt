@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.mealmate.modules.auth.data.model.LoginRequest
+import com.example.mealmate.modules.auth.data.model.MeResponse
 import com.example.mealmate.modules.auth.data.repo.LoginRepo
 import com.example.mealmate.navigation.Screen
 import com.example.mealmate.shared.managers.SessionManager
@@ -59,6 +60,9 @@ class LoginViewmodel @Inject constructor(
                 println("Login Success - token: $token")
                 sessionManager.token = token
                 tokenManager.saveToken(token)
+                getMe(
+                    success = { meModel -> sessionManager.me = meModel },
+                    onError = { errorMsg -> println(errorMsg) })
                 appNavi.to(Screen.HomeScreen.route)
             }
         )
@@ -77,6 +81,23 @@ class LoginViewmodel @Inject constructor(
                 },
                 onRight = { token ->
                     success(token)
+                }
+            )
+        }
+    }
+
+    private fun getMe(
+        success: (meResponse: MeResponse) -> Unit,
+        onError: (errMsg: String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = loginRepo.getMe()
+            result.fold(
+                onLeft = { failure ->
+                    onError(failure.errorMessage)
+                },
+                onRight = { me ->
+                    success(me)
                 }
             )
         }

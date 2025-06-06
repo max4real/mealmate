@@ -7,7 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.mealmate.di.MealMateApp
+import com.example.mealmate.shared.LocalDialogState
 import com.example.mealmate.shared.managers.SessionManager
 import com.example.mealmate.shared.managers.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,18 +24,21 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenManager: TokenManager
 
+    @Inject
+    lateinit var app: MealMateApp
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-//        sessionManager.token = tokenManager.getToken()
-//        println("Saved Token - ${sessionManager.token}")
+
         setContent {
-//            XAMTheme {
-            AppNavigation()
-//            }
+            CompositionLocalProvider(
+                LocalDialogState provides app.dialogState
+            ) {
+                AppNavigation()
+            }
         }
     }
 }

@@ -43,10 +43,11 @@ android {
 
 dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation ("com.google.accompanist:accompanist-swiperefresh:0.30.1")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation(libs.androidx.constraintlayout.compose.android)
     kapt("com.google.dagger:hilt-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
@@ -75,7 +76,7 @@ dependencies {
 
 // Other
     implementation("com.google.accompanist:accompanist-pager:0.34.0")
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
     implementation("dev.chrisbanes.haze:haze:0.6.0")

@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mealmate.modules.auth.ui.screen.LoginPage
 import com.example.mealmate.modules.auth.ui.screen.OTPPage
+import com.example.mealmate.modules.auth.ui.screen.RegisterDonePage
 import com.example.mealmate.modules.auth.ui.screen.SignUpPage
 import com.example.mealmate.modules.auth.ui.viewmodel.LoginViewmodel
 import com.example.mealmate.modules.auth.ui.viewmodel.RegisterViewModel
@@ -48,6 +49,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             val loginViewmodel = it.sharedViewModel<LoginViewmodel>(navController)
             LoginPage(navController, loginViewmodel)
         }
+        composable(Screen.RegisterDoneScreen.route) { RegisterDonePage(navController) }
     }
 }
 

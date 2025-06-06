@@ -2,10 +2,18 @@ package com.example.mealmate.navigation
 
 sealed class Screen(val route: String) {
     data object SplashScreen : Screen("splash")
-    data object HomeScreen : Screen("home")
     data object LoginScreen : Screen("login")
     data object SignupScreen : Screen("auth")
     data object OtpScreen : Screen("otp-screen")
+    data object RegisterDoneScreen : Screen("register-done")
+
+    data object HomeScreen : Screen("home")
+    data object MealPlan : Screen("meal-plan")
+    data object ShoppingList : Screen("shopping-list")
+    data object Profile : Screen("profile")
+
+    data object NewMeal : Screen("new-meal")
+
 
     fun withArgs(vararg args: String): String {
         return buildString {

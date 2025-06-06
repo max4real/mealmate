@@ -7,7 +7,11 @@ import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -15,41 +19,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 
 
 @Composable
-fun ShareTextViaSms() {
-    val context = LocalContext.current
-
-    Button(onClick = {
-        val phoneNumber = "09789786123"
-        val message = "Lee pl thar gyi, Mwakkk"
-
-        val uri = "smsto:$phoneNumber".toUri()
-
-        val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
-            putExtra("sms_body", message)
-        }
-
-        try {
-            context.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(context, "No SMS app found.", Toast.LENGTH_SHORT).show()
-        }
-    }) {
-        Text("Share via SMS")
+fun SmsSender() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        PickContactAndSendSms()
     }
 }
 
 @Composable
-fun PickContactPhoneNumber() {
+fun PickContactAndSendSms() {
     val context = LocalContext.current
-    var phoneNumber = remember { mutableStateOf("") }
+    var selectedPhone = remember { mutableStateOf("") }
 
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -64,22 +57,51 @@ fun PickContactPhoneNumber() {
     val contactPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickContact()
     ) { contactUri: Uri? ->
-        contactUri?.let {
-            // Now read the phone number from the URI
+        contactUri?.let { uri ->
             val cursor = context.contentResolver.query(
-                contactUri, arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER), null, null, null
+                uri,
+                null,  // Get all columns for now
+                null,
+                null,
+                null
             )
+
             cursor?.use {
                 if (it.moveToFirst()) {
-                    phoneNumber.value = it.getString(
-                        it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    )
+                    val idIndex = it.getColumnIndex(ContactsContract.Contacts._ID)
+                    val hasPhoneNumberIndex =
+                        it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
+
+                    val contactId = it.getString(idIndex)
+                    val hasPhoneNumber = it.getInt(hasPhoneNumberIndex) > 0
+
+                    if (hasPhoneNumber) {
+                        val phoneCursor = context.contentResolver.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+                            arrayOf(contactId),
+                            null
+                        )
+
+                        phoneCursor?.use { pc ->
+                            if (pc.moveToFirst()) {
+                                val numberIndex =
+                                    pc.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                                val number = pc.getString(numberIndex)
+                                selectedPhone.value = number
+                                sendSms(context, selectedPhone.value)
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "No number found", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
     }
 
-    // Request permission when Composable is launched
+
     LaunchedEffect(Unit) {
         val granted = ContextCompat.checkSelfPermission(
             context, Manifest.permission.READ_CONTACTS
@@ -89,15 +111,31 @@ fun PickContactPhoneNumber() {
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Button(onClick = {
-            contactPickerLauncher.launch(null)
-        }) {
-            Text("Pick Contact")
-        }
+    Button(onClick = {
+        contactPickerLauncher.launch(null)
+    }) {
+        Text("Pick Contact & Send SMS")
+    }
 
-        if (phoneNumber.value.isNotEmpty()) {
-            Text("Phone: $phoneNumber", modifier = Modifier.padding(top = 8.dp))
-        }
+    if (selectedPhone.value.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Selected: ${selectedPhone.value}")
     }
 }
+
+private fun sendSms(context: android.content.Context, phoneNumber: String) {
+    val message = "Hey, What up broooooo!"
+    val uri = Uri.parse("smsto:$phoneNumber")
+
+    val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
+        putExtra("sms_body", message)
+    }
+
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "No SMS app found.", Toast.LENGTH_SHORT).show()
+    }
+}
+
+
