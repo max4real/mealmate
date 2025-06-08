@@ -6,7 +6,7 @@ data class MealPlanModel(
     val id: String,
     val recipeName: String,
     val recipeImage: String,
-    val categoryName: String,
+    val categoryName: String?,
     val ingredients: List<IngredientModel>,
     val instruction: String,
     val startDate: String,

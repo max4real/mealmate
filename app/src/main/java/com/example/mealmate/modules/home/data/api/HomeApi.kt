@@ -4,6 +4,7 @@ import com.example.mealmate.modules.home.data.model.AddToPlanRequest
 import com.example.mealmate.modules.home.data.model.CategoryModel
 import com.example.mealmate.modules.home.data.model.MealDetailModel
 import com.example.mealmate.shared.model.ApiResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -22,5 +23,5 @@ interface HomeApi {
     ): ApiResponse<List<MealDetailModel>>
 
     @POST("plans")
-    suspend fun addToPlan(@Body request: AddToPlanRequest): ApiResponse<Map<String, String>>
+    suspend fun addToPlan(@Body request: AddToPlanRequest): Response<ApiResponse<Map<String, String>>>
 }

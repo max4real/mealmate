@@ -2,6 +2,7 @@ package com.example.mealmate.modules.meal_plan.ui.widget
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.mealmate.modules.home.data.model.MealDetailModel
 import com.example.mealmate.modules.meal_plan.data.model.MealPlanModel
 import com.example.mealmate.ui.theme.CustomColors
 
@@ -39,7 +39,10 @@ fun MealListCard(
             .fillMaxWidth()
             .height(120.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(CustomColors.cardColor),
+            .background(CustomColors.cardColor)
+            .clickable {
+                onViewClick()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(

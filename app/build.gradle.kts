@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose.android)
     kapt("com.google.dagger:hilt-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.33.2-alpha")
+
 
 // AndroidX + Compose
     implementation("androidx.core:core-ktx:1.12.0")

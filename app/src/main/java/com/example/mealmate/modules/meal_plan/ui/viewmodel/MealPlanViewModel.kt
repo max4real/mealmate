@@ -41,22 +41,58 @@ class MealPlanViewModel @Inject constructor(
     private val _isMealListLoading = MutableStateFlow<Boolean>(false)
     val isMealListLoading: StateFlow<Boolean> get() = _isMealListLoading
 
+    private val _showLoadingDialog = MutableStateFlow<Boolean>(false)
+    val showLoadingDialog: StateFlow<Boolean> get() = _showLoadingDialog
+
+    private val _isPageRefreshing = MutableStateFlow<Boolean>(false)
+    val isPageRefreshing: StateFlow<Boolean> get() = _isPageRefreshing
+
     init {
         _userName.value = sessionManager.me?.name
-        getMealListWithCategory()
+        getMealPlanList()
     }
 
-    fun showCardRemoveDialog() {
+    fun pageRefresh() {
+        _isPageRefreshing.value = true
+        _mealListError.value = ""
+        getMealPlanList()
+        _isPageRefreshing.value = false
+    }
+
+    fun showCardRemoveDialog(meal: MealPlanModel) {
         dialogController.showDialog(
             type = DialogType.WARNING,
-            title = "Confirm",
+            title = "Remove meal form your plan?",
             message = "Are you sure?",
-            onConfirm = { /* ... */ },
+            onConfirm = { removeMealPlan(meal) },
             onDismiss = {}
         )
     }
 
-    fun getMealListWithCategory() {
+    private fun removeMealPlan(meal: MealPlanModel) {
+        _showLoadingDialog.value = true
+        viewModelScope.launch {
+            val result = repo.deleteMealPlan(mealId = meal.id)
+            result.fold(
+                onLeft = { failure ->
+                    _showLoadingDialog.value = false
+                    dialogController.showDialog(
+                        type = DialogType.ERROR,
+                        title = "Error",
+                        message = failure.errorMessage,
+                        onConfirm = { },
+                        onDismiss = { }
+                    )
+                },
+                onRight = { message ->
+                    _showLoadingDialog.value = false
+                    getMealPlanList()
+                }
+            )
+        }
+    }
+
+    private fun getMealPlanList() {
         _isMealListLoading.value = true
         _mealListError.value = ""
         viewModelScope.launch {
@@ -69,6 +105,38 @@ class MealPlanViewModel @Inject constructor(
                 onRight = { dataList ->
                     _mealList.value = dataList
                     _isMealListLoading.value = false
+                }
+            )
+        }
+    }
+
+    fun updateMealPlan(info: MealPlanModel) {
+        _showLoadingDialog.value = true
+        viewModelScope.launch {
+            val result = repo.updateMealPlan(
+                info = info
+            )
+            result.fold(
+                onLeft = { failure ->
+                    _showLoadingDialog.value = false
+                    dialogController.showDialog(
+                        type = DialogType.ERROR,
+                        title = "Error",
+                        message = failure.errorMessage,
+                        onConfirm = { },
+                        onDismiss = { }
+                    )
+                },
+                onRight = { message ->
+                    _showLoadingDialog.value = false
+                    getMealPlanList()
+                    dialogController.showDialog(
+                        type = DialogType.SUCCESS,
+                        title = "Success",
+                        message = message,
+                        onConfirm = { },
+                        onDismiss = { }
+                    )
                 }
             )
         }

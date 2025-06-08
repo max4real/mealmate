@@ -24,7 +24,11 @@ class HomeViewModel @Inject constructor(
 
     fun updateShowDialog(value: Boolean) {
         _showDialog.value = value
+        _addToPlanError.value = ""
     }
+
+    private val _isPageRefreshing = MutableStateFlow<Boolean>(false)
+    val isPageRefreshing: StateFlow<Boolean> get() = _isPageRefreshing
 
     private val _userName = MutableStateFlow<String?>(null)
     val userName: StateFlow<String?> get() = _userName
@@ -34,6 +38,9 @@ class HomeViewModel @Inject constructor(
 
     private val _isCategoryLoading = MutableStateFlow<Boolean>(false)
     val isCategoryLoading: StateFlow<Boolean> get() = _isCategoryLoading
+
+    private val _categoryError = MutableStateFlow<String>("")
+    val categoryError: StateFlow<String> get() = _categoryError
 
     private val _mealList = MutableStateFlow<List<MealDetailModel>>(emptyList())
     val mealList: StateFlow<List<MealDetailModel>> get() = _mealList
@@ -56,6 +63,16 @@ class HomeViewModel @Inject constructor(
         getMealListWithCategory(id = null)
     }
 
+    fun pageRefresh() {
+        _isPageRefreshing.value = true
+        _categoryError.value = ""
+        _mealListError.value = ""
+        _addToPlanError.value = ""
+        getCategoryList()
+        getMealListWithCategory(id = null)
+        _isPageRefreshing.value = false
+    }
+
     private fun getCategoryList() {
         _isCategoryLoading.value = true
         viewModelScope.launch {
@@ -64,6 +81,7 @@ class HomeViewModel @Inject constructor(
                 onLeft = { failure ->
                     // Handle error if needed
                     // Log.e("HomeViewModel", "Failed to fetch categories: ${failure.errorMessage}")
+                    _categoryError.value = failure.errorMessage
                 },
                 onRight = { dataList ->
                     _categoryList.value = dataList
@@ -105,7 +123,7 @@ class HomeViewModel @Inject constructor(
                 },
                 onRight = { data ->
 //                    _showDialog.value = false
-                    _addToPlanError.value = data
+                    _addToPlanError.value = "Successfully added to plan."
                     _isAddToPlanLoading.value = false
                 }
             )

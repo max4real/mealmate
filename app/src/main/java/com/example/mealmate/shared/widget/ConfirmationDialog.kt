@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.mealmate.extensions.WidthBox
 import com.example.mealmate.shared.model.DialogState
@@ -56,7 +57,7 @@ fun ConfirmationDialog(
                 Text(text = state.title, style = MaterialTheme.typography.headlineSmall)
             },
             text = {
-                Text(text = state.message, style = MaterialTheme.typography.bodyMedium)
+                Text(text = state.message, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             },
             confirmButton = {
                 Row {

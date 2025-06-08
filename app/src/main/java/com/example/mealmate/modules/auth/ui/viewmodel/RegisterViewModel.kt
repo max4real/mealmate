@@ -59,6 +59,11 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun onClickSignUp(appNavi: NavHostController) {
+        _registerErrorMessage.value = ""
+        if (_password.value != _cpassword.value) {
+            _registerErrorMessage.value = "Password do not match."
+            return
+        }
         _isRegisterLoading.value = true
         viewModelScope.launch {
             registerRequestOtp(
@@ -95,20 +100,15 @@ class RegisterViewModel @Inject constructor(
 
     //OTP page
     val currentOtp = MutableStateFlow("")
-    val showErrorMessage = MutableStateFlow(false)
     val errorMessage = MutableStateFlow("")
     val isEnable = MutableStateFlow(true)
-    val isOtpBtnEnable = MutableStateFlow(true)
+    val isOtpBtnEnable = MutableStateFlow(false)
     val canResend = MutableStateFlow(false)
     val resending = MutableStateFlow(false)
     val otpBtnLoading = MutableStateFlow(false)
-    val remainingSeconds = MutableStateFlow(30)
+    val remainingSeconds = MutableStateFlow(60)
     fun updateCurrentOtp(value: String) {
         currentOtp.value = value
-    }
-
-    fun setShowErrorMessage(show: Boolean) {
-        showErrorMessage.value = show
     }
 
     fun setErrorMessage(msg: String) {
@@ -143,6 +143,7 @@ class RegisterViewModel @Inject constructor(
 
     fun resendOtp() {
         setResending(true)
+        errorMessage.value = ""
         viewModelScope.launch {
             resendOtp(
                 otpRequest = ResendOtpRequest(
@@ -151,12 +152,10 @@ class RegisterViewModel @Inject constructor(
                 onSuccess = { status ->
                     setResending(false)
                     startOtpCountdown()
-                    // register success, go to login
                 },
                 onError = { errorMsg ->
                     setResending(false)
                     errorMessage.value = errorMsg
-                    showErrorMessage.value = true
                 }
             )
         }
@@ -176,26 +175,27 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun onOtpValueChange(value: String) {
+        errorMessage.value = ""
         currentOtp.value = value
         isOtpBtnEnable.value = value.length == 6
     }
 
     fun onOtpBtnClick(appNavi: NavHostController) {
+        errorMessage.value = ""
         otpBtnLoading.value = true
         viewModelScope.launch {
             verifyOtp(
                 otpRequest = VerifyOtpRequest(
                     email = email.value,
-                    code = currentOtp.value.toString(),
+                    code = currentOtp.value,
                 ),
                 onSuccess = { code ->
                     otpBtnLoading.value = false
-                    appNavi.offAll(Screen.LoginScreen.route)
+                    appNavi.offAll(Screen.RegisterDoneScreen.route)
                 },
                 onError = { errorMsg ->
                     otpBtnLoading.value = false
-                    setShowErrorMessage(true)
-                    setErrorMessage(errorMsg)
+                    errorMessage.value = errorMsg
                 }
             )
         }

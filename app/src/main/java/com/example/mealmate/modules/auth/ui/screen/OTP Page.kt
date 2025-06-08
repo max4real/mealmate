@@ -44,7 +44,6 @@ fun OTPPage(
     val contentPadding: Dp = 20.dp
     val currentOtp by registerViewModel.currentOtp.collectAsState()
     val remainingSeconds by registerViewModel.remainingSeconds.collectAsState()
-    val showErrorMessage by registerViewModel.showErrorMessage.collectAsState()
     val errorMessage by registerViewModel.errorMessage.collectAsState()
     val isEnable by registerViewModel.isEnable.collectAsState()
     val isOtpBtnEnable by registerViewModel.isOtpBtnEnable.collectAsState()
@@ -90,11 +89,10 @@ fun OTPPage(
                     .padding(horizontal = contentPadding),
                 onValueChange = {
                     registerViewModel.onOtpValueChange(it)
-                    registerViewModel.setShowErrorMessage(false)
                 },
             )
             10.HeightBox()
-            if (showErrorMessage) Text(
+            if (errorMessage.isNotEmpty()) Text(
                 modifier = Modifier.padding(horizontal = contentPadding),
                 text = errorMessage,
                 fontSize = 16.sp,
@@ -132,7 +130,7 @@ fun OTPPage(
             }
             40.HeightBox()
             Button(
-                enabled = isOtpBtnEnable,
+                enabled = isOtpBtnEnable && !otpBtnLoading,
                 onClick = {
                     registerViewModel.onOtpBtnClick(appNavi)
                 },

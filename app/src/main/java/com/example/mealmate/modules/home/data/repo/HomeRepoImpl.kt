@@ -8,6 +8,7 @@ import com.example.mealmate.shared.model.CustomFailure
 import com.example.mealmate.shared.model.Either
 import com.example.mealmate.shared.model.NetworkException
 import com.example.mealmate.shared.model.NetworkFailure
+import com.example.mealmate.shared.model.parseErrorMessage
 import javax.inject.Inject
 
 class HomeRepoImpl @Inject constructor(val api: HomeApi) : HomeRepo {
@@ -40,15 +41,14 @@ class HomeRepoImpl @Inject constructor(val api: HomeApi) : HomeRepo {
     override suspend fun addToPlan(request: AddToPlanRequest): Either<CustomFailure, String> {
         return try {
             val res = api.addToPlan(request)
-            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
-                Either.Right(res.metadata.message)
+            if (res.isSuccessful) {
+                Either.Right(res.body()!!.metadata.message)
             } else {
-                throw NetworkException(res.metadata.message)
+                val msg = res.parseErrorMessage()
+                Either.Left(NetworkFailure(msg))
             }
         } catch (e: Exception) {
             Either.Left(NetworkFailure(e.message))
         }
     }
-
-
 }

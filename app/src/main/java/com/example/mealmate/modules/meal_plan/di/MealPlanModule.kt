@@ -1,8 +1,5 @@
 package com.example.mealmate.modules.meal_plan.di
 
-import com.example.mealmate.modules.home.data.api.HomeApi
-import com.example.mealmate.modules.home.data.repo.HomeRepo
-import com.example.mealmate.modules.home.data.repo.HomeRepoImpl
 import com.example.mealmate.modules.meal_plan.data.api.MealPlanApi
 import com.example.mealmate.modules.meal_plan.data.repo.MealPlanRepo
 import com.example.mealmate.modules.meal_plan.data.repo.MealPlanRepoImpl

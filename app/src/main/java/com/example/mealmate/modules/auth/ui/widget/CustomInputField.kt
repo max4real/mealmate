@@ -29,10 +29,11 @@ fun CustomInputField(
     value: String,
     label: String,
     keyboardType: KeyboardType = KeyboardType.Text,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(5.dp))
             .height(45.dp)
