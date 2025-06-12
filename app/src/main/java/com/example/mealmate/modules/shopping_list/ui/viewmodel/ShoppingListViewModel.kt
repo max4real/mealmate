@@ -124,60 +124,56 @@ class ShoppingListViewModel @Inject constructor(
             delay(3000) // Using 3s for testing
             val checkedItems = tokenManager.getCheckedIngredients()
             if (checkedItems.isNotEmpty()) {
-                // ⭐️ FIX: Group the ingredients by shoppingListId before sending
-                val groupedIngredients = checkedItems.entries.groupBy(
-                    keySelector = {
-                        // The shoppingListId is the part of our unique key before the last '-'
-                        it.key.substringBeforeLast('-')
-                    },
-                    valueTransform = {
-                        // The value is the ingredient object itself
-                        it.value
-                    }
-                )
+                val groupedIngredients = checkedItems.entries.groupBy(keySelector = {
+                    it.key.substringBeforeLast('-')
+                }, valueTransform = {
+                    it.value
+                })
 
                 sendCheckedIngredientsToBackend(groupedIngredients)
-                tokenManager.clearCheckedIngredients()
             }
         }
     }
 
     private suspend fun sendCheckedIngredientsToBackend(groupedIngredients: Map<String, List<ShoppingListIngredient>>) {
         _showLoadingDialog.value = true
-//        val result = repo.updateCheckedIngredients(ingredients)
-//        result.fold(
-//            onLeft = { failure ->
-//                _shoppingListError.value = failure.errorMessage
-//                // Save failed items back to preferences for retry
-//                val currentFailed = ingredients.associateBy { it.name }
-//                tokenManager.saveCheckedIngredients(currentFailed)
-//            }, onRight = {
-//                // Success - items already cleared from preferences
-//            })
-        println("--- Sending Checked Ingredients to Backend (Mock) ---")
-        // Iterate over the grouped map
+
+        val ingredientsForApi = mutableListOf<TestModel>()
+
         for ((listId, ingredients) in groupedIngredients) {
-            println("  -> For Shopping List ID: $listId")
             for (ingredient in ingredients) {
-                println("    - Ingredient: ${ingredient.name} (bought=${ingredient.bought})")
+                val apiModel = TestModel(
+                    id = listId,
+                    name = ingredient.name,
+                    qty = ingredient.qty,
+                    bought = ingredient.bought
+                )
+                ingredientsForApi.add(apiModel)
             }
         }
-        println("-------------------------------------------------------")
+        val payload = TestListModel(ingredients = ingredientsForApi)
+
+        val result = repo.updateCheckedIngredients(payload)
+        result.fold(onLeft = { failure ->
+            _shoppingListError.value = failure.errorMessage
+        }, onRight = {
+            println("API call successful!")
+            tokenManager.clearCheckedIngredients()
+        })
+
         _showLoadingDialog.value = false
     }
 
     override fun onCleared() {
         super.onCleared()
-        // Send any remaining checked items when ViewModel is cleared
-        debounceJob?.cancel() // Cancel any pending debounce job
+        debounceJob?.cancel()
         viewModelScope.launch {
             val checkedItems = tokenManager.getCheckedIngredients()
             if (checkedItems.isNotEmpty()) {
-                // ⭐️ FIX: Apply the same grouping logic here
-                val groupedIngredients = checkedItems.entries.groupBy(
-                    keySelector = { it.key.substringBeforeLast('-') },
-                    valueTransform = { it.value }
-                )
+                val groupedIngredients =
+                    checkedItems.entries.groupBy(
+                        keySelector = { it.key.substringBeforeLast('-') },
+                        valueTransform = { it.value })
                 sendCheckedIngredientsToBackend(groupedIngredients)
                 tokenManager.clearCheckedIngredients()
             }
@@ -185,5 +181,10 @@ class ShoppingListViewModel @Inject constructor(
     }
 }
 
+data class TestListModel(
+    val ingredients: List<TestModel>
+)
 
-
+data class TestModel(
+    val id: String, val name: String, val qty: String, val bought: Boolean
+)

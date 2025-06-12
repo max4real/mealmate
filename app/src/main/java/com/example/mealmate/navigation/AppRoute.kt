@@ -19,7 +19,7 @@ import androidx.navigation.navOptions
 import com.example.mealmate.modules.home.ui.screen.HomePage
 import com.example.mealmate.modules.meal_plan.ui.screen.MealPlanPage
 import com.example.mealmate.modules.new_meal.ui.screen.NewMealPage
-import com.example.mealmate.modules.profile.ProfilePage
+import com.example.mealmate.modules.profile.ui.ProfilePage
 import com.example.mealmate.modules.shopping_list.ui.screen.ShoppingListPage
 import com.example.mealmate.modules.splashscreen.ui.screen.SplashScreen
 import com.example.mealmate.navigation.Screen
@@ -59,7 +59,7 @@ fun AppNavigation() {
     // Add the dialog at the root level
     ConfirmationDialog(
         state = dialogState.value,
-        onDismissRequest = { dialogState.value = dialogState.value.copy(isVisible = false) }
+        onDismiss = { dialogState.value = dialogState.value.copy(isVisible = false) }
     )
 }
 

@@ -83,7 +83,7 @@ fun ShoppingListPage(appNavi: NavHostController) {
 
                 shoppingList.value.isEmpty() -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No meals found.")
+                        Text("No shopping list yet.")
                     }
                 }
 

@@ -1,8 +1,15 @@
 package com.example.mealmate.modules.home.ui.widget
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -27,10 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.example.mealmate.R
 import com.example.mealmate.extensions.WidthBox
 import com.example.mealmate.modules.home.data.model.MealDetailModel
 import com.example.mealmate.ui.theme.CustomColors
@@ -46,6 +57,8 @@ fun MealDetailsDialog(
     val title = info.name
     val imageUrl = info.imageUrl
     val instructions = info.instruction
+    val context = LocalContext.current
+    val youtubeLink = info.youtubeLink
 
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
@@ -91,15 +104,43 @@ fun MealDetailsDialog(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    AsyncImage(
-                        model = imageUrl,
-                        contentDescription = "Meal Image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                    )
+                    Box {
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = "Meal Image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        if (youtubeLink != null) {
+                            Box(
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .clip(RoundedCornerShape(7.dp))
+                                    .background(Color.White)
+                                    .clickable {
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(youtubeLink))
+                                        context.startActivity(intent)
+                                    }
+                                    .align(Alignment.Center)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.youtubeicon),
+                                    contentDescription = "YouTube Icon",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(12.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+
+                    }
+
 
                     Text(
                         text = "Ingredients",
@@ -107,13 +148,6 @@ fun MealDetailsDialog(
                         color = Color.Black
                     )
 
-//                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-//                        info.mealIngredient.forEach { mealIngredient ->
-//                            val name = mealIngredient.ingredient.name
-//                            val unit = mealIngredient.measurement.unit
-//                            Text(text = "• $name ($unit)", color = Color.DarkGray)
-//                        }
-//                    }
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         info.mealIngredient.forEach { item ->
                             Row(verticalAlignment = Alignment.CenterVertically) {

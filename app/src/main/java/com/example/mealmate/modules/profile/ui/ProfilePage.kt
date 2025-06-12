@@ -1,4 +1,4 @@
-package com.example.mealmate.modules.profile
+package com.example.mealmate.modules.profile.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.mealmate.R
+import com.example.mealmate.shared.widget.LoadingDialog
 
 @Composable
 fun ProfilePage(appNavi: NavHostController) {
@@ -47,7 +49,11 @@ fun ProfilePage(appNavi: NavHostController) {
 
     val userName = viewModel.userName.collectAsState()
     val userEmail = viewModel.email.collectAsState()
+    val showLoadingDialog = viewModel.showLoadingDialog.collectAsState()
 
+    if (showLoadingDialog.value) {
+        LoadingDialog()
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -116,6 +122,16 @@ fun ProfilePage(appNavi: NavHostController) {
                     title = "Logout",
                     description = "Sign out of your account",
                     onClick = { viewModel.logout(appNavi) },
+                    color = MaterialTheme.colorScheme.errorContainer
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ProfileActionCard(
+                    icon = Icons.Default.Warning,
+                    title = "Delete Account",
+                    description = "Delete your account?",
+                    onClick = { viewModel.deleteAcc(appNavi) },
                     color = MaterialTheme.colorScheme.errorContainer
                 )
             }

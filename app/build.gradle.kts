@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")

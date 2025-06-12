@@ -2,7 +2,8 @@ package com.example.mealmate.modules.shopping_list.data.repo
 
 import com.example.mealmate.modules.shopping_list.data.api.ShoppingListApi
 import com.example.mealmate.modules.shopping_list.data.model.ShoppingList
-import com.example.mealmate.modules.shopping_list.data.model.ShoppingListIngredient
+import com.example.mealmate.modules.shopping_list.ui.viewmodel.TestListModel
+import com.example.mealmate.modules.shopping_list.ui.viewmodel.TestModel
 import com.example.mealmate.shared.model.CustomFailure
 import com.example.mealmate.shared.model.Either
 import com.example.mealmate.shared.model.NetworkException
@@ -23,7 +24,16 @@ class ShoppingListRepoImpl @Inject constructor(val api: ShoppingListApi) : Shopp
         }
     }
 
-    override suspend fun updateCheckedIngredients(ingredients: List<ShoppingListIngredient>): Either<CustomFailure, Unit> {
-        TODO("Not yet implemented")
+    override suspend fun updateCheckedIngredients(ingredients: TestListModel): Either<CustomFailure, String> {
+        return try {
+            val res = api.updateCheckedIngredients(ingredients)
+            if (res.metadata.statusCode == 200 || res.metadata.statusCode == 201) {
+                Either.Right("")
+            } else {
+                throw NetworkException(res.metadata.message)
+            }
+        } catch (e: Exception) {
+            Either.Left(NetworkFailure(e.message))
+        }
     }
 }

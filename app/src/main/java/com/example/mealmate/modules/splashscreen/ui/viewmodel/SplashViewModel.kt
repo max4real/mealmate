@@ -10,7 +10,6 @@ import com.example.mealmate.navigation.Screen
 import com.example.mealmate.shared.managers.SessionManager
 import com.example.mealmate.shared.managers.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import offAll
 import javax.inject.Inject
@@ -24,21 +23,21 @@ class SplashViewModel @Inject constructor(
 
     fun checkLoginAndNavigate(appNavi: NavHostController) {
         viewModelScope.launch {
-            getMe(
-                onError = { errorMsg ->
-                    println(errorMsg)
-                    appNavi.offAll(Graph.AuthGraph.route)
-                },
-                success = { meModel ->
-                    sessionManager.me = meModel
-                    appNavi.offAll(Screen.HomeScreen.route)
-                }
-            )
-//            if (tokenManager.getToken() != null) {
-//                appNavi.offAll(Screen.HomeScreen.route)
-//            } else {
-//                appNavi.offAll(Graph.AuthGraph.route)
-//            }
+
+            if (tokenManager.getToken() != null) {
+                getMe(
+                    onError = { errorMsg ->
+                        println(errorMsg)
+                        appNavi.offAll(Graph.AuthGraph.route)
+                    },
+                    success = { meModel ->
+                        sessionManager.me = meModel
+                        appNavi.offAll(Screen.HomeScreen.route)
+                    }
+                )
+            } else {
+                appNavi.offAll(Graph.AuthGraph.route)
+            }
         }
     }
 

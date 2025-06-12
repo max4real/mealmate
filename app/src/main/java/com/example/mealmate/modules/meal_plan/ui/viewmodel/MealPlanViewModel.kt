@@ -65,7 +65,9 @@ class MealPlanViewModel @Inject constructor(
             title = "Remove meal form your plan?",
             message = "Are you sure?",
             onConfirm = { removeMealPlan(meal) },
-            onDismiss = {}
+            onDismiss = {
+                getMealPlanList()
+            }
         )
     }
 

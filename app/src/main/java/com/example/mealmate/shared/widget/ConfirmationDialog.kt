@@ -1,7 +1,6 @@
 package com.example.mealmate.shared.widget
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,19 +22,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.mealmate.extensions.WidthBox
 import com.example.mealmate.shared.model.DialogState
 import com.example.mealmate.shared.model.DialogType
-import com.example.mealmate.ui.theme.CustomColors
-
 
 @Composable
 fun ConfirmationDialog(
-    state: DialogState, onDismissRequest: () -> Unit
+    state: DialogState,
+    onDismiss: () -> Unit
 ) {
     if (state.isVisible) {
         AlertDialog(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = {
+                state.onDismiss()
+                onDismiss()
+            },
             icon = {
                 Icon(
                     modifier = Modifier.size(30.dp),
@@ -57,49 +57,46 @@ fun ConfirmationDialog(
                 Text(text = state.title, style = MaterialTheme.typography.headlineSmall)
             },
             text = {
-                Text(text = state.message, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+                Text(
+                    text = state.message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        state.onDismiss()
+                        onDismiss()
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .height(35.dp)
+                        .padding(end = 4.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black,
+                    ),
+                    border = BorderStroke(1.dp, Color.Black)
+                ) {
+                    Text("Cancel")
+                }
             },
             confirmButton = {
-                Row {
-                    OutlinedButton(
-                        onClick = {
-                            state.onDismiss()
-                            onDismissRequest()
-                        },
-                        shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(35.dp)
-                            .padding(end = 4.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black,
-                            disabledContentColor = Color.Black.copy(alpha = 0.5f)
-                        ),
-                        border = BorderStroke(1.dp, Color.Black)
-                    ) {
-                        Text("Cancel")
-                    }
-                    20.WidthBox()
-                    Button(
-                        onClick = {
-                            state.onConfirm()
-                            onDismissRequest()
-                        },
-                        shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(35.dp)
-                            .padding(start = 4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Black,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.White.copy(alpha = 0.5f),
-                            disabledContainerColor = CustomColors.textSecond
-                        )
-                    ) {
-                        Text("Confirm")
-                    }
+                Button(
+                    onClick = {
+                        state.onConfirm()
+                        onDismiss()
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .height(35.dp)
+                        .padding(start = 4.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black,
+                        contentColor = Color.White,
+                    )
+                ) {
+                    Text("Confirm")
                 }
             },
         )
