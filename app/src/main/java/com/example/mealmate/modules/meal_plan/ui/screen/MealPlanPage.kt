@@ -55,13 +55,11 @@ fun MealPlanPage(appNavi: NavHostController) {
         swipeRefreshState.isRefreshing = isRefreshing.value
     }
 
-    // 1. read the flag as a State<Boolean>
     val refreshFlag = appNavi.currentBackStackEntry
         ?.savedStateHandle
         ?.getStateFlow("REFRESH_MEAL_PLAN", false)
         ?.collectAsState()
 
-    // 2. react when it turns true
     LaunchedEffect(refreshFlag?.value) {
         if (refreshFlag?.value == true) {
             viewModel.pageRefresh()

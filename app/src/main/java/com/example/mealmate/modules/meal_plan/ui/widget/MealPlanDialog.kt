@@ -3,6 +3,7 @@ package com.example.mealmate.modules.meal_plan.ui.widget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -14,8 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,9 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.example.mealmate.extensions.WidthBox
 import com.example.mealmate.modules.auth.ui.widget.CustomInputField
 import com.example.mealmate.modules.home.data.model.IngredientModel
 import com.example.mealmate.modules.meal_plan.data.model.MealPlanModel
@@ -119,11 +118,32 @@ fun MealPlanDialog(
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop
                     )
 
-                    Text(
-                        text = "Ingredients (Name - Qty)",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.Black
-                    )
+//                    Text(
+//                        text = "Ingredients (Name - Qty)",
+//                        style = MaterialTheme.typography.titleSmall,
+//                        color = Color.Black
+//                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Ingredients (Name - Qty)",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.W500
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        if (isEditing.value) {
+                            IconButton(
+                                onClick = { ingredients.add(IngredientModel("", "")) }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         // ───────── EXISTING INGREDIENT ROWS ─────────
@@ -167,34 +187,6 @@ fun MealPlanDialog(
                             }
                         }
 
-                        // ───────── ADD-NEW ROW ─────────
-                        if (isEditing.value) {
-                            Button(
-                                onClick = { ingredients.add(IngredientModel("", "")) },
-                                enabled = true,
-                                shape = RoundedCornerShape(5.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
-                                    .height(45.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Black,
-                                    contentColor = Color.White,
-                                    disabledContentColor = Color.White.copy(alpha = 0.5f),
-                                    disabledContainerColor = CustomColors.textSecond
-                                )
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = null,
-                                        tint = Color.White
-                                    )
-                                    5.WidthBox()
-                                    Text("Add Ingredient")
-                                }
-                            }
-                        }
                     }
 
                     Text(

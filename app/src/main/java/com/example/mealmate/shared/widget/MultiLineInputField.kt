@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mealmate.ui.theme.CustomColors
@@ -20,6 +21,7 @@ fun MultilineInputField(
     value: String,
     label: String,
     minLines: Int = 6,
+    fontSize : TextUnit = 16.sp,
     onValueChange: (String) -> Unit
 ) {
     Box(
@@ -32,10 +34,10 @@ fun MultilineInputField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = TextStyle(fontSize = 16.sp, color = CustomColors.textMain),
+            textStyle = TextStyle(fontSize = fontSize, color = CustomColors.textMain),
             modifier = Modifier.fillMaxWidth(),
             singleLine = false,
-            maxLines = Int.MAX_VALUE,   // let it grow after 6 lines if needed
+            maxLines = 20,   // let it grow after 6 lines if needed
             minLines = minLines
         )
     }

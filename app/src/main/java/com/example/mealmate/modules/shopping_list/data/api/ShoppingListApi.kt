@@ -1,18 +1,15 @@
 package com.example.mealmate.modules.shopping_list.data.api
 
-import com.example.mealmate.modules.auth.data.model.LoginRequest
-import com.example.mealmate.modules.auth.data.model.OTPRequest
+import com.example.mealmate.modules.shopping_list.data.model.ShoppingList
 import com.example.mealmate.shared.model.ApiResponse
-import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ShoppingListApi {
-    //Login
-    @POST("/auth/login")
-    suspend fun login(@Body request: LoginRequest): ApiResponse<String>
+    @GET("plans/shopping")
+    suspend fun getShoppingList(): ApiResponse<List<ShoppingList>>
 
-    @POST("auth/login-request-otp")
-//    @Headers("x-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ENTzIuKLi4L4MsDVNSoO0ZIjOi1hToEPKJAMgNB0G7o")
-    suspend fun loginRequestOtp(@Body request: OTPRequest): ApiResponse<String>
+    @POST("plans/shopping")
+    suspend fun updateCheckedIngredients(): ApiResponse<Map<String, String>>
 
 }

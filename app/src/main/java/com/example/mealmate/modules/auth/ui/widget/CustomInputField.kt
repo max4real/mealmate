@@ -30,6 +30,7 @@ fun CustomInputField(
     label: String,
     keyboardType: KeyboardType = KeyboardType.Text,
     onValueChange: (String) -> Unit,
+    border: Color = Color.Transparent,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -37,7 +38,7 @@ fun CustomInputField(
             .fillMaxWidth()
             .clip(RoundedCornerShape(5.dp))
             .height(45.dp)
-            .border(1.5.dp, Color.Transparent, RoundedCornerShape(5.dp))
+            .border(0.5.dp, border, RoundedCornerShape(5.dp))
             .background(Color(0xfff1f1f1))
     ) {
         Row(
