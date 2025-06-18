@@ -115,7 +115,7 @@ fun MealDetailsDialog(
                             contentScale = ContentScale.Crop
                         )
 
-                        if (youtubeLink != null) {
+                        if (!youtubeLink.isNullOrEmpty()) {
                             Box(
                                 modifier = Modifier
                                     .size(45.dp)
