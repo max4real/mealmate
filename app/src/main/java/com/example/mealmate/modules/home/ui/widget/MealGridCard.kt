@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.mealmate.modules.home.data.model.MealDetailModel
@@ -57,7 +58,9 @@ fun MealGridCard(
                 Text(
                     text = mealDetailModel.name,
                     color = Color.Black,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 TextButton(onClick = onViewClick) {
                     Text(text = "View", color = Color.Gray)
