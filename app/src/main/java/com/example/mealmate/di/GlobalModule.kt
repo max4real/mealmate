@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GlobalModule {
     @Provides
-    fun baseUrl() = "https://meal-mate-o72n.onrender.com/api/v1/"
+    fun baseUrl() = "https://api.mealmate.shwepyaesone.com/api/v1/"
 //    fun baseUrl() = "http://192.168.31.82:4005/api/v1/"
 
     @Provides
